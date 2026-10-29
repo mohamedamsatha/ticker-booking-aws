@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101018">
+  <title>Passion — Discover Your Next Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="#"><span class="brand-mark">P</span> passion<span class="brand-dot">.</span></a>
+    <nav class="nav-links">
+      <a href="#explore">Explore</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="nav-cta" href="#explore">Find an event <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow"><span class="live-dot"></span> YOUR NEXT GREAT MEMORY STARTS HERE</div>
+        <h1>Life happens<br> <span>out there.</span></h1>
+        <p class="hero-copy">
+          Find the concerts, ideas and experiences that make
+          ordinary days feel extraordinary.
+        </p>
+        <a class="primary-btn" href="#explore">Explore experiences <span>↘</span></a>
+        <div class="hero-meta">
+          <div class="avatar-stack">
+            <span>A</span><span>M</span><span>S</span><span>+</span>
+          </div>
+          <p><strong>Made for the moments</strong><br>you'll talk about tomorrow.</p>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <img
+          src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=90"
+          alt="Crowd enjoying a live music concert">
+        <div class="image-shade"></div>
+        <div class="floating-note">
+          <span class="note-icon">✳</span>
+          <div><strong>Good things happen</strong><br><span>when you show up.</span></div>
+        </div>
+        <div class="image-caption">
+          <span>01 / FIND YOUR CROWD</span>
+          <span>CHENNAI, INDIA</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats" id="about">
+      <div><strong>Live</strong><span>experiences</span></div>
+      <div><strong>Local</strong><span>communities</span></div>
+      <div><strong>Real</strong><span>memories</span></div>
+      <div class="stats-note">Less scrolling.<br><strong>More living.</strong></div>
+    </section>
+
+    <section class="explore section" id="explore">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">CURATED FOR YOUR CURIOSITY</div>
+          <h2>Find your <span>thing.</span></h2>
+          <p class="section-copy">A little inspiration for your next day out.</p>
+        </div>
+        <span class="event-count" id="event-count">04 EXPERIENCES</span>
+      </div>
+
+      <div class="search-row">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="search-input" type="search" placeholder="Search concerts, workshops..." aria-label="Search events">
+        </label>
+        <div class="filters" role="group" aria-label="Filter events">
+          <button class="filter active" data-category="All">All events</button>
+          <button class="filter" data-category="Music">Music</button>
+          <button class="filter" data-category="Technology">Tech</button>
+          <button class="filter" data-category="Workshop">Workshops</button>
+        </div>
+      </div>
+
+      <div class="event-grid" id="event-grid">
+        {% for event in events %}
+        <article class="event-card"
+          data-name="{{ event.name|lower }}"
+          data-category="{{ event.category }}">
+          <div class="event-image">
+            <img src="{{ event.image }}" alt="{{ event.name }}" loading="lazy">
+            <span class="event-tag">{{ event.tag }}</span>
+            <button class="heart-btn" aria-label="Save {{ event.name }}" type="button">♡</button>
+          </div>
+          <div class="event-details">
+            <div class="event-category">{{ event.category }} <span>·</span> CHENNAI</div>
+            <h3>{{ event.name }}</h3>
+            <div class="event-info">
+              <span>▦ {{ event.date }}</span>
+              <span>◷ {{ event.time }}</span>
+            </div>
+            <div class="event-info venue">⌖ {{ event.venue }}</div>
+            <div class="event-footer">
+              <div class="price">₹{{ event.price }} <span>/ person</span></div>
+              <button
+                class="book-btn"
+                data-id="{{ event.id }}"
+                data-name="{{ event.name }}"
+                data-price="{{ event.price }}"
+                data-available="{{ event.available }}"
+                type="button">Book <span>↗</span></button>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <p class="empty-state" id="empty-state" hidden>No events found. Try another search.</p>
+    </section>
+
+    <section class="bottom-banner">
+      <div class="eyebrow">YOUR WEEKEND CALLED</div>
+      <h2>Make room for<br><span>something memorable.</span></h2>
+      <a href="#explore" class="primary-btn">Find your next experience ↗</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="#"><span class="brand-mark">P</span> passion<span class="brand-dot">.</span></a>
+    <p>Built for experiences, not just plans.</p>
+    <span>DEMO PROJECT · 2026</span>
+  </footer>
+
+  <dialog id="booking-dialog" class="booking-dialog">
+    <form id="booking-form">
+      <button class="dialog-close" type="button" id="close-dialog" aria-label="Close">×</button>
+      <div class="eyebrow">YOUR NEXT EXPERIENCE</div>
+      <h2 id="booking-title">Book your place</h2>
+      <p class="dialog-note">This is a demo booking. No payment will be taken.</p>
+
+      <label for="customer-name">Your name</label>
+      <input id="customer-name" name="customer_name" required maxlength="80" autocomplete="name">
+
+      <label for="customer-email">Email address</label>
+      <input id="customer-email" name="customer_email" type="email" required maxlength="254" autocomplete="email">
+
+      <label for="ticket-quantity">Number of tickets</label>
+      <input id="ticket-quantity" name="quantity" type="number" min="1" max="6" value="1" required>
+
+      <div class="total-row"><span>Estimated total</span><strong id="booking-total">₹0</strong></div>
+      <button class="primary-btn submit-btn" type="submit">Continue <span>↗</span></button>
+      <p id="booking-message" role="status" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>
