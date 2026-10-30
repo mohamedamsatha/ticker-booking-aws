@@ -26,7 +26,6 @@ function filterEvents() {
       card.dataset.category === activeCategory;
 
     const visible = matchesName && matchesCategory;
-
     card.hidden = !visible;
 
     if (visible) visibleCount++;
@@ -52,7 +51,6 @@ filterButtons.forEach((button) => {
   });
 });
 
-// Demo favourite button; selection is not persisted.
 document.querySelectorAll(".heart-btn").forEach((button) => {
   button.addEventListener("click", () => {
     const saved = button.classList.toggle("saved");
@@ -101,7 +99,7 @@ dialog.addEventListener("click", (event) => {
   if (event.target === dialog) dialog.close();
 });
 
-bookingForm.addEventListener("submit", (event) => {
+bookingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!selectedEvent) return;
@@ -122,15 +120,48 @@ bookingForm.addEventListener("submit", (event) => {
     formData.get("customer_name") || ""
   ).trim();
 
-  if (!customerName) {
-    bookingMessage.textContent = "Please enter your name.";
+  const customerEmail = String(
+    formData.get("customer_email") || ""
+  ).trim();
+
+  if (!customerName || !customerEmail) {
+    bookingMessage.textContent = "Please enter your name and email.";
     return;
   }
 
-  bookingMessage.textContent =
-    `Demo confirmation: ${quantity} ticket(s) for ${selectedEvent.name}. ` +
-    `Estimated total: ₹${selectedEvent.price * quantity}. ` +
-    `No booking has been saved.`;
+  const submitButton = bookingForm.querySelector(".submit-btn");
 
-  // No payment, database write, or real reservation occurs here.
+  submitButton.disabled = true;
+  bookingMessage.textContent = "Sending booking request...";
+
+  try {
+    const response = await fetch("/api/book", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        event_id: selectedEvent.id,
+        customer_name: customerName,
+        customer_email: customerEmail,
+        quantity: quantity
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Booking request failed.");
+    }
+
+    bookingMessage.textContent =
+      `Booking request sent successfully! Booking ID: ${result.booking_id}`;
+
+    bookingForm.reset();
+  } catch (error) {
+    bookingMessage.textContent = error.message;
+  } finally {
+    submitButton.disabled = false;
+  }
 });
+
